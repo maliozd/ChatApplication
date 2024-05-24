@@ -40,21 +40,6 @@ namespace ChatApp.SignalR
             }
             return Enumerable.Empty<string>();
         }
-        //private static readonly ConcurrentDictionary<int, string> _userConnections = new ConcurrentDictionary<int, string>();
 
-        //public void AddConnection((int userId, string connectionId) data)
-        //{
-        //    _userConnections.TryAdd(data.userId, data.connectionId);
-        //}
-
-        //public void RemoveConnection(int userId)
-        //{
-        //    throw new NotImplementedException();
-        //}
-        //public string GetConnectionId(int userId)
-        //{
-        //    _userConnections.TryGetValue(userId, out var connection);
-        //    return connection;
-        //}
     }
 }

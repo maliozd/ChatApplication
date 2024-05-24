@@ -45,6 +45,21 @@ builder.Services.AddSignalR(options =>
 {
     options.KeepAliveInterval = TimeSpan.FromSeconds(5);
 });
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(config =>
+    {
+        config.AllowAnyHeader().
+        AllowAnyOrigin().
+        AllowAnyMethod().Build();
+    });
+    options.AddPolicy("default", config =>
+    {
+        config.AllowAnyHeader().
+        AllowAnyOrigin().
+        AllowAnyMethod().Build();
+    });
+});
 builder.Services.AddAuthentincationConfiguration(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddApplication();
@@ -53,16 +68,19 @@ builder.Services.AddInfrastructureServices(builder.Configuration);
 
 
 var app = builder.Build();
-
+app.UseSwagger();
+app.UseSwaggerUI();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+
 }
+
 app.ConfigureExceptionHandler<Program>(app.Services.GetRequiredService<ILogger<Program>>());
 
 app.UseHttpsRedirection();
+app.UseCors(configurePolicy: config => config.AllowAnyMethod().AllowAnyOrigin().AllowAnyHeader().Build());
+app.UseCors("default");
 
 app.UseAuthentication();
 
@@ -75,5 +93,4 @@ app.UseRouting().
     endpoints.MapControllers();
     endpoints.MapHub<MessageHub>("hubs/messagehub");
 });
-
 app.Run();

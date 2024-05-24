@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using ChatApp.Application.Common.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ChatApp.Application
 {
@@ -10,6 +11,7 @@ namespace ChatApp.Application
             {
                 options.RegisterServicesFromAssembly(typeof(DependencyExtensions).Assembly);
             });
+            services.AddScoped<IEventPublisher, EventPublisher>();
             return services;
         }
     }

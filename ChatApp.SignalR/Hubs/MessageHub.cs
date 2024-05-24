@@ -5,18 +5,8 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace ChatApp.SignalR.Hubs
 {
-    public class MessageHub : Hub
+    public class MessageHub(IEventPublisher _eventPublisher) : Hub
     {
-        //hublarda connected olaylarında abstract edilmiş eventler fırlatıp applicationda onları dinleyip işlemler yapabilirim
-        //create and inject event publisher
-        readonly IConnectionCache _cache;
-        readonly IEventPublisher _eventPublisher;
-        public MessageHub(IConnectionCache cache)
-        {
-            _cache = cache;
-        }
-
-
         // signalr client user mapping => keep connection ids on database, ---> uygulama kapanıp açıldığında connectionlar sıfırlanıyor mu? her yeni bağlantının connection idsi farklı mı?
         // cihaz bilgisi ile cihazda bir secret key tut, secret key ile userid dbye koy
         // gelen istekte userid yi jwt den bul
@@ -33,7 +23,7 @@ namespace ChatApp.SignalR.Hubs
                 UserConnectedEvent userConnectedEvent = new(userId, connectionId);
                 await _eventPublisher.PublishAsync(userConnectedEvent);
 
-                _cache.AddConnection(Convert.ToInt32(userId), connectionId);
+                //_cache.AddConnection(Convert.ToInt32(userId), connectionId);
                 Console.WriteLine($"Connected : {connectionId}, User Id:{userId}");
             }
             //bağlandı bilgisi ile online offline durumunu değiştirebilirim

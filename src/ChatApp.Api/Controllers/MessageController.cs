@@ -10,7 +10,7 @@ namespace ChatApp.Api.Controllers
     /// message -> post put get delete ---> id actions
     /// </summary>
     /// <param name="mediator"></param>
-    [Route("api/message/{action}")]
+    [Route("api/message/[action]")]
     [ApiController]
     public class MessageController(IMediator mediator) : ControllerBase
     {
