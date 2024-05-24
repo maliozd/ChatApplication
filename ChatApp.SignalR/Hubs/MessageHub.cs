@@ -1,5 +1,5 @@
 ﻿using ChatApp.Application.Common.Interfaces;
-using ChatApp.SignalR.Events;
+using ChatApp.Domain.Events;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.SignalR;
 

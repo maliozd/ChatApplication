@@ -1,4 +1,4 @@
-﻿namespace ChatApp.Application.Common.Interfaces.Events
+﻿namespace ChatApp.Application.Events.Interfaces
 {
     public interface IWebSocketConnectionEvent
     {
