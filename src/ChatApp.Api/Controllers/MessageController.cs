@@ -1,5 +1,7 @@
 ﻿using ChatApp.Application.Message;
+using ChatApp.Application.Message.Get;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChatApp.Api.Controllers
@@ -10,9 +12,10 @@ namespace ChatApp.Api.Controllers
     /// message -> post put get delete ---> id actions
     /// </summary>
     /// <param name="mediator"></param>
-    [Route("api/message/[action]")]
+    [Route("api/message/")]
+    [Authorize("default")]
     [ApiController]
-    public class MessageController(IMediator mediator) : ControllerBase
+    public class MessageController(IMediator mediator) : CustomBaseController
     {
         readonly IMediator _mediator = mediator;
         [HttpPost]
@@ -26,6 +29,17 @@ namespace ChatApp.Api.Controllers
             Console.WriteLine(token.ToString());
 
             return Ok("");
+        }
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            var userId = GetUserId();
+            if (userId > 0)
+            {
+                var response = await _mediator.Send(new GetMessagesQuery(userId));
+                return Ok(response);
+            }
+            return Ok();
         }
     }
 }

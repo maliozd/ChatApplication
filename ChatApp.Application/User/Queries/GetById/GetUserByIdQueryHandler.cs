@@ -12,7 +12,7 @@ namespace ChatApp.Application.User.Queries.GetById
             if (user is null)
                 throw new NullReferenceException(nameof(user));
 
-            return new UserDto(user.Id, user.Username);
+            return new UserDto(user.Id, user.Username, "C:\\Users\\mehme\\Downloads\\profilePic.jpg");
         }
     }
 }

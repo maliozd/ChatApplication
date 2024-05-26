@@ -1,4 +1,5 @@
 using ChatApp.Api.Extensions;
+using ChatApp.Api.Middlewares;
 using ChatApp.Application;
 using ChatApp.SignalR;
 using ChatApp.SignalR.Hubs;
@@ -45,21 +46,7 @@ builder.Services.AddSignalR(options =>
 {
     options.KeepAliveInterval = TimeSpan.FromSeconds(5);
 });
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(config =>
-    {
-        config.AllowAnyHeader().
-        AllowAnyOrigin().
-        AllowAnyMethod().Build();
-    });
-    options.AddPolicy("default", config =>
-    {
-        config.AllowAnyHeader().
-        AllowAnyOrigin().
-        AllowAnyMethod().Build();
-    });
-});
+builder.Services.AddCors(options => options.AddPolicy(name: "alperen", policy => policy.WithOrigins("http://127.0.0.1:5500", "https://07cf-85-100-65-34.ngrok-free.app/", "https://127.0.0.1:5500", "http://127.0.0.1:8080").AllowAnyHeader().AllowAnyMethod().AllowCredentials().Build()));
 builder.Services.AddAuthentincationConfiguration(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddApplication();
@@ -68,27 +55,27 @@ builder.Services.AddInfrastructureServices(builder.Configuration);
 
 
 var app = builder.Build();
-app.UseSwagger();
-app.UseSwaggerUI();
 // Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
 
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.ConfigureExceptionHandler<Program>(app.Services.GetRequiredService<ILogger<Program>>());
+app.UseCors("alperen");
 
 app.UseHttpsRedirection();
-app.UseCors(configurePolicy: config => config.AllowAnyMethod().AllowAnyOrigin().AllowAnyHeader().Build());
-app.UseCors("default");
 
+app.UseRouting();
 app.UseAuthentication();
+app.UseAuthorization();
+app.UseMiddleware<JwtMiddleware>();
 
 
-//app.MapControllers();
-app.UseRouting().
-    UseAuthorization().
-    UseEndpoints(endpoints =>
+app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
     endpoints.MapHub<MessageHub>("hubs/messagehub");

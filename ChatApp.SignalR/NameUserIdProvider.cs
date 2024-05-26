@@ -11,9 +11,14 @@ namespace ChatApp.SignalR
             try
             {
                 var httpContext = connection.GetHttpContext();
-                string token = httpContext.Request.Headers.Authorization;
-                token = token.Replace("Bearer ", string.Empty);
+                var token = httpContext.Request.Query["access_token"].ToString();
 
+                if (string.IsNullOrEmpty(token))
+                    token = httpContext.Request.Headers.Authorization;
+                if (string.IsNullOrEmpty(token))
+                    return string.Empty;
+
+                token = token.Replace("Bearer ", string.Empty);
                 var decodedToken = new JwtSecurityTokenHandler().ReadJwtToken(token);
 
                 var userIdClaim = decodedToken.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;

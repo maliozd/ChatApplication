@@ -4,7 +4,7 @@ using MediatR;
 
 namespace ChatApp.Application.Events.Handlers
 {
-    internal class UserConnectedEventHandler(IConnectionCache _connectionPool) : INotificationHandler<UserConnectedEvent>
+    internal class UserConnectedEventHandler(IConnectionPool _connectionPool) : INotificationHandler<UserConnectedEvent>
     {
 
         public async Task Handle(UserConnectedEvent notification, CancellationToken cancellationToken)

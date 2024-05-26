@@ -8,7 +8,7 @@ using MediatR;
 
 namespace ChatApp.Application.Message
 {
-    public class SendPrivateMessageCommandHandler(IChatMessageRepository _chatMessageRepository, IMessageHubService _messageHubService, IConnectionCache _connectionCache, IUserRepository _userRepository) : IRequestHandler<SendPrivateMessageCommand>
+    public class SendPrivateMessageCommandHandler(IChatMessageRepository _chatMessageRepository, IMessageHubService _messageHubService, IConnectionPool _connectionCache, IUserRepository _userRepository) : IRequestHandler<SendPrivateMessageCommand>
     {
         public async Task Handle(SendPrivateMessageCommand request, CancellationToken cancellationToken)
         {
@@ -38,7 +38,8 @@ namespace ChatApp.Application.Message
             var connectionIds = _connectionCache.GetConnectionIds(message.ToUserId);
             if (!connectionIds.Any())
             {
-                throw new Exception("No active connections for the recipient");
+                //throw new Exception("No active connections for the recipient");
+                //notification
             }
 
             foreach (var connectionId in connectionIds)

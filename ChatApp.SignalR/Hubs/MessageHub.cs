@@ -5,8 +5,19 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace ChatApp.SignalR.Hubs
 {
-    public class MessageHub(IEventPublisher _eventPublisher) : Hub
+    public class MessageHub : Hub
     {
+        //hublarda connected olaylarında abstract edilmiş eventler fırlatıp applicationda onları dinleyip işlemler yapabilirim
+        //create and inject event publisher
+        readonly IConnectionPool _cache;
+        readonly IEventPublisher _eventPublisher;
+        public MessageHub(IConnectionPool cache, IEventPublisher eventPublisher)
+        {
+            _cache = cache;
+            _eventPublisher = eventPublisher;
+        }
+
+
         // signalr client user mapping => keep connection ids on database, ---> uygulama kapanıp açıldığında connectionlar sıfırlanıyor mu? her yeni bağlantının connection idsi farklı mı?
         // cihaz bilgisi ile cihazda bir secret key tut, secret key ile userid dbye koy
         // gelen istekte userid yi jwt den bul
@@ -20,10 +31,10 @@ namespace ChatApp.SignalR.Hubs
             if (Context.UserIdentifier is not null)
             {
                 var userId = Convert.ToInt32(Context.UserIdentifier);
+
                 UserConnectedEvent userConnectedEvent = new(userId, connectionId);
                 await _eventPublisher.PublishAsync(userConnectedEvent);
 
-                //_cache.AddConnection(Convert.ToInt32(userId), connectionId);
                 Console.WriteLine($"Connected : {connectionId}, User Id:{userId}");
             }
             //bağlandı bilgisi ile online offline durumunu değiştirebilirim
@@ -35,13 +46,17 @@ namespace ChatApp.SignalR.Hubs
         public override async Task OnDisconnectedAsync(Exception exception)
         {
             var connectionId = Context.ConnectionId;
-            var userId = Context.UserIdentifier;
+            var userId = Convert.ToInt32(Context.UserIdentifier);
 
-            Console.WriteLine($"User Id :{userId} ");
-
+            await _eventPublisher.PublishAsync(new UserDisconnectedEvent(userId, connectionId));
 
             await base.OnDisconnectedAsync(exception);
         }
+
+        //public Task OnStartWriting()
+        //{
+        //}
+
         /// <summary>
         /// mesaj gönderme işini http ile yapabilirim. öyle yapmam daha iyi olabilir mi?
         /// </summary>

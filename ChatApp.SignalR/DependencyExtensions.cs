@@ -12,7 +12,7 @@ namespace ChatApp.SignalR
         {
             services.AddScoped<IMessageHubService, MessageHubService>();
             services.AddSingleton<IUserIdProvider, NameUserIdProvider>();
-            services.AddSingleton<IConnectionCache, ConnectionCache>();
+            services.AddSingleton<IConnectionPool, ConnectionPool>();
         }
 
     }

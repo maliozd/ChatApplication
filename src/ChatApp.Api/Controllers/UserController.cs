@@ -21,7 +21,7 @@ namespace ChatApp.Api.Controllers
         public async Task<IActionResult> Get()
         {
             var response = await _mediator.Send(new GetUsersQuery());
-            var a = HttpContext;
+
             return Ok(response);
         }
     }
