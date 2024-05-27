@@ -1,5 +1,4 @@
 ﻿using ChatApp.Application.Common.Dtos.Message;
-using ChatApp.Application.Common.Dtos.User;
 using ChatApp.Application.Common.Exceptions;
 using ChatApp.Application.Common.Interfaces.Repository;
 using ChatApp.Domain.Entities;
@@ -12,7 +11,7 @@ namespace Infrastructure.Data.Repositories
         public async Task AddAsync(ChatMessage chatMessage, CancellationToken cancellationToken)
         {
             await _dbContext.AddAsync(chatMessage, cancellationToken);
-            await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync(cancellationToken);
         }
         public async Task<UserMessagesDto> GetUserMessagesByIdAsync(int userId, CancellationToken cancellationToken)
         {
@@ -29,16 +28,8 @@ namespace Infrastructure.Data.Repositories
                              .Select(m => new ChatMessageDto(
                                  m.Id,
                                  m.MessageText,
-                                 new UserDto(
-                                     m.Sender.Id,
-                                     m.Sender.Username,
-                                     m.Sender.ProfilePicturePath
-                                 ),
-                                 new UserDto(
-                                     m.Receiver.Id,
-                                     m.Receiver.Username,
-                                     m.Receiver.ProfilePicturePath
-                                 ),
+                                 m.Sender.Id,
+                                 m.Receiver.Id,
                                  m.Timestamp
                              )).ToList();
 

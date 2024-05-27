@@ -1,8 +1,6 @@
-﻿using ChatApp.Application.Common.Dtos.User;
-
-namespace ChatApp.Application.Common.Dtos.Message
+﻿namespace ChatApp.Application.Common.Dtos.Message
 {
-    public record ChatMessageDto(int Id, string MessageText, UserDto FromUser, UserDto ToUser, DateTime Timestamp)
+    public record ChatMessageDto(int Id, string MessageText, int FromUserId, int ToUserId, DateTime Timestamp)
     {
         //public int Id { get; set; }
         //public string MessageText { get; set; }

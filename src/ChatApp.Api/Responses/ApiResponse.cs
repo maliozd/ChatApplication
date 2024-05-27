@@ -2,10 +2,10 @@
 
 namespace ChatApp.Api.Responses
 {
-    public record ApiResponse<T>(string Status, int Code, string Message, T Data, object Errors)
+    public record ApiResponse<T>(string Status, int StatusCode, string Message, T Data, object Errors)
     {
         public string Status { get; set; } = Status;
-        public int Code { get; set; } = Code;
+        public int StatusCode { get; set; } = StatusCode;
         public string Message { get; set; } = Message;
         public T Data { get; set; } = Data;
         public object Errors { get; set; } = Errors;

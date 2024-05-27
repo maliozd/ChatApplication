@@ -7,7 +7,7 @@
         public byte[] PasswordSalt { get; set; }
         public byte[] PasswordHash { get; set; }
         public bool IsEmailConfirmed { get; set; }
-        public string ProfilePicturePath { get; set; }
+        public string? ProfilePicturePath { get; set; }
         public string IP { get; set; }
         public string? Status { get; set; }
 
