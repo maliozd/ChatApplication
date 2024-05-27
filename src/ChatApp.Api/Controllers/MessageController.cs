@@ -21,8 +21,6 @@ namespace ChatApp.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> SendMessage(SendPrivateMessageCommand sendPrivateMessageCommand)
         {
-            //dispatcher ??? burada araya bir katman daha?
-            //logici dağıtmak için??
             await _mediator.Send(sendPrivateMessageCommand);
 
             var token = HttpContext.Request.Headers.Authorization;

@@ -7,13 +7,10 @@ namespace ChatApp.SignalR.Services
 {
     public class MessageHubService(IHubContext<MessageHub> _hubContext/*, IConnectionCache _connectionCache*/) : IMessageHubService
     {
-        //readonly IConnectionCache _connectionCache;
         public async Task A()
         {
 
         }
-        //MessageReceiveFunctionName
-        //in memory cache
         public Task SendMessageAsync(MessageDto chatMessage)
         {
             _hubContext.Clients.All.SendAsync("MessageReceived", chatMessage);

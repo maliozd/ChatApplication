@@ -1,5 +1,4 @@
 using ChatApp.Api.Extensions;
-using ChatApp.Api.Middlewares;
 using ChatApp.Application;
 using ChatApp.SignalR;
 using ChatApp.SignalR.Hubs;
@@ -72,7 +71,6 @@ app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseMiddleware<JwtMiddleware>();
 
 
 app.UseEndpoints(endpoints =>
