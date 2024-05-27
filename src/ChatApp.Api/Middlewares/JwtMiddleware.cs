@@ -12,12 +12,12 @@ namespace ChatApp.Api.Middlewares
             var token = context.Request.Headers["Authorization"].ToString();
 
             if (!string.IsNullOrEmpty(token))
-                AttachUserToContext(context, token.Replace("Bearer ", string.Empty));
+                AttachUserId(context, token.Replace("Bearer ", string.Empty));
 
             await _next(context);
         }
 
-        private void AttachUserToContext(HttpContext context, string token)
+        private static void AttachUserId(HttpContext context, string token)
         {
             try
             {
@@ -30,8 +30,7 @@ namespace ChatApp.Api.Middlewares
             catch (Exception exc)
             {
                 throw;
-                // do nothing if jwt validation fails
-                // user is not attached to context so request won't have access to secure routes
+
             }
         }
     }

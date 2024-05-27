@@ -1,4 +1,6 @@
-﻿using ChatApp.Application.Message;
+﻿using ChatApp.Api.Responses;
+using ChatApp.Application.Common.Dtos.Message;
+using ChatApp.Application.Message;
 using ChatApp.Application.Message.Get;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -15,31 +17,31 @@ namespace ChatApp.Api.Controllers
     [Route("api/message/")]
     [Authorize("default")]
     [ApiController]
-    public class MessageController(IMediator mediator) : CustomBaseController
+    public class MessageController(IMediator mediator) : BaseController
     {
         readonly IMediator _mediator = mediator;
         [HttpPost]
-        public async Task<IActionResult> SendMessage(SendPrivateMessageCommand sendPrivateMessageCommand)
+        public async Task<ApiResponse<bool>> SendMessage(SendPrivateMessageCommand sendPrivateMessageCommand)
         {
             //dispatcher ??? burada araya bir katman daha?
-            //logici dağıtmak için??
+            //logici dağıtmak için?
             await _mediator.Send(sendPrivateMessageCommand);
 
             var token = HttpContext.Request.Headers.Authorization;
             Console.WriteLine(token.ToString());
 
-            return Ok("");
+            return ApiResponse<bool>.Success(true);
         }
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<ApiResponse<UserMessagesDto>> Get()
         {
             var userId = GetUserId();
             if (userId > 0)
             {
                 var response = await _mediator.Send(new GetMessagesQuery(userId));
-                return Ok(response);
+                return ApiResponse<UserMessagesDto>.Success(response);
             }
-            return Ok();
+            return ApiResponse<UserMessagesDto>.Error("User not found !");
         }
     }
 }

@@ -14,18 +14,18 @@ namespace ChatApp.SignalR.Services
         }
         //MessageReceiveFunctionName
         //in memory cache
-        public Task SendMessageAsync(MessageDto chatMessage)
+        public Task SendMessageAsync(MessageSignal chatMessage)
         {
             _hubContext.Clients.All.SendAsync("MessageReceived", chatMessage);
             return Task.CompletedTask;
         }
 
-        public Task SendMessageAsync(MessageDto chatMessage, string connectionId)
+        public Task SendMessageAsync(MessageSignal chatMessage, string connectionId)
         {
             _hubContext.Clients.Client(connectionId).SendAsync("MessageReceived", chatMessage);
             return Task.CompletedTask;
         }
-        public async Task SendMessageAsync(MessageDto chatMessage, string connectionId, string function)
+        public async Task SendMessageAsync(MessageSignal chatMessage, string connectionId, string function)
         {
             await _hubContext.Clients.Client(connectionId).SendAsync(function, chatMessage);
             //await _hubContext.Clients.Client(connectionId).SendAsync(function, chatMessage);

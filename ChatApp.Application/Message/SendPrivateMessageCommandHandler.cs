@@ -1,6 +1,7 @@
 ﻿using Application.Common.Interfaces.Hubs;
 using ChatApp.Application.Common.Constants;
 using ChatApp.Application.Common.Dtos.SignalR;
+using ChatApp.Application.Common.Exceptions;
 using ChatApp.Application.Common.Interfaces;
 using ChatApp.Application.Common.Interfaces.Repository;
 using ChatApp.Domain.Entities;
@@ -12,10 +13,6 @@ namespace ChatApp.Application.Message
     {
         public async Task Handle(SendPrivateMessageCommand request, CancellationToken cancellationToken)
         {
-            if (request.FromUserId == default)
-            {
-                request.FromUserId = 7;
-            }
 
             var message = new ChatMessage
             {
@@ -32,8 +29,9 @@ namespace ChatApp.Application.Message
             var senderUser = await _userRepository.GetByIdAsync(request.FromUserId, cancellationToken);
             if (senderUser == null)
             {
-                throw new Exception("Sender user not found");
+                throw new CustomException("Sender user not found");
             }
+
 
             var connectionIds = _connectionCache.GetConnectionIds(message.ToUserId);
             if (!connectionIds.Any())
@@ -44,7 +42,7 @@ namespace ChatApp.Application.Message
 
             foreach (var connectionId in connectionIds)
             {
-                await _messageHubService.SendMessageAsync(new MessageDto(
+                await _messageHubService.SendMessageAsync(new MessageSignal(
                         message.MessageText,
                         senderUser.Username,
                        senderUser.Id,
