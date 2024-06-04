@@ -13,22 +13,36 @@ namespace ChatApp.Api.Controllers
         [HttpPost]
         public async Task<ApiResponse<bool>> Register(CreateUserCommand createUserCommand)
         {
-            createUserCommand.IPAddress = HttpContext.Connection.RemoteIpAddress.ToString();
-            var response = await _mediator.Send(createUserCommand);
-            if (response > 0)
-                return ApiResponse<bool>.Success(true);
-            else
-                return ApiResponse<bool>.Error();
+            try
+            {
+                createUserCommand.IPAddress = HttpContext.Connection.RemoteIpAddress.ToString();
+                var response = await _mediator.Send(createUserCommand);
+                if (response > 0)
+                    return ApiResponse<bool>.Success(true);
+                else
+                    return ApiResponse<bool>.Error();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         [HttpPost]
         public async Task<ApiResponse<object>> Login(LoginUserCommand loginUserCommand)
         {
-            var token = await _mediator.Send(loginUserCommand);
-            return ApiResponse<object>.Success(new
+            try
             {
-                Token = token
-            }, "Login Success");
+                var token = await _mediator.Send(loginUserCommand);
+                return ApiResponse<object>.Success(new
+                {
+                    Token = token
+                }, "Login Success");
+            }
+            catch
+            {
+                throw;
+            }
         }
     }
 }

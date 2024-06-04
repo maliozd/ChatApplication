@@ -1,35 +1,28 @@
 ﻿using Application.Common.Interfaces.Hubs;
+using ChatApp.Application.Common.Constants;
 using ChatApp.Application.Common.Dtos.SignalR;
 using ChatApp.SignalR.Hubs;
 using Microsoft.AspNetCore.SignalR;
 
 namespace ChatApp.SignalR.Services
 {
-    public class MessageHubService(IHubContext<MessageHub> _hubContext/*, IConnectionCache _connectionCache*/) : IMessageHubService
+    public class MessageHubService(IHubContext<MessageHub> _hubContext) : IMessageHubService
     {
-        //readonly IConnectionCache _connectionCache;
-        public async Task A()
+        public async Task SendMessageAsync(MessageSignal chatMessage)
         {
-
-        }
-        //MessageReceiveFunctionName
-        //in memory cache
-        public Task SendMessageAsync(MessageSignal chatMessage)
-        {
-            _hubContext.Clients.All.SendAsync("MessageReceived", chatMessage);
-            return Task.CompletedTask;
+            await _hubContext.Clients.User(chatMessage.ToUserId.ToString()).SendAsync(SignalRConstants.ReceiveMessageFunctionName, chatMessage);
         }
 
-        public Task SendMessageAsync(MessageSignal chatMessage, string connectionId)
+        public async Task ChangeOnlineStatusAsync(int userId, bool onlineStatus)
         {
-            _hubContext.Clients.Client(connectionId).SendAsync("MessageReceived", chatMessage);
-            return Task.CompletedTask;
+            await _hubContext.Clients.User(userId.ToString()).SendAsync(SignalRConstants.UserOnlineStatusChangedFunctionName, onlineStatus);
         }
-        public async Task SendMessageAsync(MessageSignal chatMessage, string connectionId, string function)
-        {
-            await _hubContext.Clients.Client(connectionId).SendAsync(function, chatMessage);
-            //await _hubContext.Clients.Client(connectionId).SendAsync(function, chatMessage);
-        }
-
     }
+    //public class HubService : IHubContext<MessageHub>
+    //{
+    //    public IHubClients Clients => Clients.
+
+    //    public IGroupManager Groups => throw new NotImplementedException();
+    //}
+
 }

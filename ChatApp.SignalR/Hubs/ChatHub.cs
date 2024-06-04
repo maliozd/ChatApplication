@@ -33,34 +33,5 @@ namespace ChatApp.SignalR.Hubs
             await base.OnDisconnectedAsync(exception);
         }
 
-        public async Task SendPrivateMessage(string toUserId, string fromUserId, string messageText)
-        {
-            var asd = Context.UserIdentifier;
-
-            if (fromUserId == null)
-            {
-                // Handle unauthenticated user
-                return;
-            }
-
-            //var command = new SendPrivateMessageCommand
-            //{
-            //    FromUserId = int.Parse(fromUserId),
-            //    ToUserId = int.Parse(toUserId),
-            //    MessageText = messageText
-            //};
-
-            //await _mediator.Send(command);
-
-            if (_userConnections.TryGetValue(toUserId, out var connectionId))
-            {
-                await Clients.Client(connectionId).SendAsync("ReceivePrivateMessage", fromUserId, messageText);
-            }
-            else
-            {
-                // Push notification logic for offline users
-                //await _pushNotificationService.SendPushNotificationAsync(toUserId, messageText);
-            }
-        }
     }
 }

@@ -1,12 +1,12 @@
-﻿using ChatApp.Application.Common.Interfaces;
+﻿using ChatApp.Application.Common.Dtos.SignalR;
+using ChatApp.Application.Common.Interfaces;
 using ChatApp.Domain.Events;
 using Microsoft.AspNetCore.SignalR;
 
 namespace ChatApp.SignalR.Hubs
 {
-    public class MessageHub(IConnectionPool cache, IEventPublisher eventPublisher) : Hub
+    public class MessageHub(IConnectionPool connectionPool, IEventPublisher eventPublisher) : Hub
     {
-        readonly IConnectionPool _cache = cache;
         readonly IEventPublisher _eventPublisher = eventPublisher;
 
         public override async Task OnConnectedAsync()
@@ -33,6 +33,28 @@ namespace ChatApp.SignalR.Hubs
             await _eventPublisher.PublishAsync(new UserDisconnectedEvent(userId, connectionId));
 
             await base.OnDisconnectedAsync(exception);
+        }
+
+        public async Task SendMessage(MessageSignal message)
+        {
+            var userId = Convert.ToInt32(Context.UserIdentifier);
+            if (!userId.Equals(message.FromUserId))
+            {
+                return;
+            }
+
+            NewMessageEvent newMessageEvent = new(message.FromUserId,
+                message.ToUserId,
+                message.MessageText,
+                message.Timestamp);
+
+            await _eventPublisher.PublishAsync(newMessageEvent);
+        }
+
+        public async Task WindowStateChanged(bool isWindowVisible)
+        {
+            var userId = Convert.ToInt32(Context.UserIdentifier);
+            await _eventPublisher.PublishAsync(new UserWindowStateChangedEvent(userId, isWindowVisible));
         }
     }
 }

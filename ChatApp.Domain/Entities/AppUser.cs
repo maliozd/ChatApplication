@@ -10,7 +10,7 @@
         public string? ProfilePicturePath { get; set; }
         public string IP { get; set; }
         public string? Status { get; set; }
-
+        public DateTime? LastSeen { get; set; }
         //public DateTime AuthenticationTime { get; set; }
         //public string UserKey { get; set; }
         //public int Port { get; set; }

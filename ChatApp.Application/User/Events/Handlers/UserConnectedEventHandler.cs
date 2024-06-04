@@ -6,11 +6,10 @@ namespace ChatApp.Application.Events.Handlers
 {
     internal class UserConnectedEventHandler(IConnectionPool _connectionPool) : INotificationHandler<UserConnectedEvent>
     {
-
         public async Task Handle(UserConnectedEvent notification, CancellationToken cancellationToken)
         {
             // User connected logic
-            // Örneğin: Kullanıcı çevrimiçi durumuna geçirilebilir veya log tutulabilir
+            // çrneğin: kullanıcı çevrimiçi durumuna geçirilebilir veya log tutulabilir
             _connectionPool.AddConnection(notification.UserId, notification.ConnectionId);
             await Task.CompletedTask;
         }

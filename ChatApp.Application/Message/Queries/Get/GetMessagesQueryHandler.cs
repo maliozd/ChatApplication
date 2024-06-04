@@ -2,7 +2,7 @@
 using ChatApp.Application.Common.Interfaces.Repository;
 using MediatR;
 
-namespace ChatApp.Application.Message.Get
+namespace ChatApp.Application.Message.Queries.Get
 {
     public class GetMessagesQueryHandler(IChatMessageRepository _chatMessageRepository, IChatMessageRepository chatMessageRepository) : IRequestHandler<GetMessagesQuery, UserMessagesDto>
     {

@@ -40,7 +40,7 @@ namespace Infrastructure.Security.Jwt
 
                 if (string.IsNullOrEmpty(context.Token))
                 {
-                    var accessToken = context.Request.Headers.Authorization; ;
+                    var accessToken = context.Request.Headers.Authorization;
                     if (string.IsNullOrEmpty(accessToken))
                     {
                         accessToken = accessToken.ToString().Replace("Bearer ", string.Empty);

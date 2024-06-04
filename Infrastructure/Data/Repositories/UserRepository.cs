@@ -33,11 +33,7 @@ namespace Infrastructure.Data.Repositories
             AppUser? user = _dbContext.Users.Where(predicate).FirstOrDefault();
             return Task.FromResult(user);
         }
-        //public async Task<int> RemoveAsync(AppUser user, CancellationToken cancellationToken)
-        //{
-        //    _dbContext.Remove(user);
-        //    return await _dbContext.SaveChangesAsync(cancellationToken);
-        //}
+
         public async Task<int> UpdateAsync(AppUser user, CancellationToken cancellationToken)
         {
             _dbContext.Update(user);
