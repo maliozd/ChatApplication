@@ -12,10 +12,9 @@ namespace ChatApp.SignalR.Services
         {
             await _hubContext.Clients.User(chatMessage.ToUserId.ToString()).SendAsync(SignalRConstants.ReceiveMessageFunctionName, chatMessage);
         }
-
-        public async Task ChangeOnlineStatusAsync(int userId, bool onlineStatus)
+        public async Task ChangeOnlineStatusAsync(string[] connectionIds, string userId, bool onlineStatus)
         {
-            await _hubContext.Clients.User(userId.ToString()).SendAsync(SignalRConstants.UserOnlineStatusChangedFunctionName, onlineStatus);
+            await _hubContext.Clients.AllExcept(connectionIds).SendAsync(SignalRConstants.UserOnlineStatusChangedFunctionName, userId, onlineStatus);
         }
     }
     //public class HubService : IHubContext<MessageHub>

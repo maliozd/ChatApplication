@@ -1,4 +1,5 @@
 ﻿using Application.Common.Interfaces.Hubs;
+using ChatApp.Application.Common.Interfaces;
 using ChatApp.Application.Common.Interfaces.Repository;
 using ChatApp.Domain.Entities;
 using ChatApp.Domain.Events;
@@ -7,11 +8,15 @@ using Microsoft.Extensions.Logging;
 
 namespace ChatApp.Application.User.Events.Handlers
 {
-    internal class UserWindowStateChangedEventHandler(IUserRepository _userRepository, IMessageHubService _messageHubService, ILogger<UserWindowStateChangedEventHandler> _logger) : INotificationHandler<UserWindowStateChangedEvent>
+    internal class UserWindowStateChangedEventHandler(IUserRepository _userRepository, IMessageHubService _messageHubService, ILogger<UserWindowStateChangedEventHandler> _logger, IConnectionPool _connectionPool) : INotificationHandler<UserWindowStateChangedEvent>
     {
         public async Task Handle(UserWindowStateChangedEvent notification, CancellationToken cancellationToken)
         {
-            await _messageHubService.ChangeOnlineStatusAsync(notification.UserId, notification.IsWindowVisible);
+            var connectionIds = _connectionPool
+                .GetConnectionIds(notification.UserId)
+                .ToArray();
+            await _messageHubService.ChangeOnlineStatusAsync(connectionIds, notification.UserId.ToString(), notification.IsWindowVisible);
+
             if (!notification.IsWindowVisible)
             {
                 AppUser user = await _userRepository.GetByIdAsync(notification.UserId, cancellationToken);

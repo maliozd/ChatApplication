@@ -24,7 +24,7 @@ namespace Infrastructure.Data.Repositories
 
             var allMessages = user.SentMessages
                              .Union(user.ReceivedMessages)
-                             .OrderBy(m => m.Timestamp)
+                             .OrderByDescending(m => m.Timestamp)
                              .Select(m => new ChatMessageDto(
                                  m.Id,
                                  m.MessageText,
