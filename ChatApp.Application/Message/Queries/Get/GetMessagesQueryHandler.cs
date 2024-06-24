@@ -4,9 +4,9 @@ using MediatR;
 
 namespace ChatApp.Application.Message.Queries.Get
 {
-    public class GetMessagesQueryHandler(IChatMessageRepository _chatMessageRepository, IChatMessageRepository chatMessageRepository) : IRequestHandler<GetMessagesQuery, UserMessagesDto>
+    public class GetMessagesQueryHandler(IChatMessageRepository _chatMessageRepository, IChatMessageRepository chatMessageRepository) : IRequestHandler<GetMessagesQuery, MessagesDto>
     {
-        public async Task<UserMessagesDto> Handle(GetMessagesQuery request, CancellationToken cancellationToken)
+        public async Task<MessagesDto> Handle(GetMessagesQuery request, CancellationToken cancellationToken)
         {
             var messages = await _chatMessageRepository.GetUserMessagesByIdAsync(request.UserId, cancellationToken);
             return messages;

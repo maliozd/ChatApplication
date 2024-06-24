@@ -5,4 +5,8 @@
         //public int Id { get; set; }
         //public List<ChatMessageDto> Messages { get; set; }
     }
+    public record MessagesDto(List<UserMessagesDto> Messages)
+    {
+
+    }
 }

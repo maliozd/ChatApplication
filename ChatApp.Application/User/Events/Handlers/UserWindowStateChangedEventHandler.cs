@@ -8,18 +8,19 @@ using Microsoft.Extensions.Logging;
 
 namespace ChatApp.Application.User.Events.Handlers
 {
-    internal class UserWindowStateChangedEventHandler(IUserRepository _userRepository, IMessageHubService _messageHubService, ILogger<UserWindowStateChangedEventHandler> _logger, IConnectionPool _connectionPool) : INotificationHandler<UserWindowStateChangedEvent>
+    internal class UserOnlineStatusChangedEventHandler(IUserRepository _userRepository, IMessageHubService _messageHubService, ILogger<UserOnlineStatusChangedEventHandler> _logger, IConnectionPool _connectionPool) : INotificationHandler<UserOnlineStatusChangedEvent>
     {
-        public async Task Handle(UserWindowStateChangedEvent notification, CancellationToken cancellationToken)
+        public async Task Handle(UserOnlineStatusChangedEvent notification, CancellationToken cancellationToken)
         {
             var connectionIds = _connectionPool
                 .GetConnectionIds(notification.UserId)
                 .ToArray();
             await _messageHubService.ChangeOnlineStatusAsync(connectionIds, notification.UserId.ToString(), notification.IsWindowVisible);
+            AppUser user = await _userRepository.GetByIdAsync(notification.UserId, cancellationToken);
+            _logger.LogInformation($"User {user.Username}'s now online --> {notification.IsWindowVisible}");
 
             if (!notification.IsWindowVisible)
             {
-                AppUser user = await _userRepository.GetByIdAsync(notification.UserId, cancellationToken);
 
                 user.LastSeen = DateTime.Now;
                 var result = await _userRepository.UpdateAsync(user, cancellationToken);

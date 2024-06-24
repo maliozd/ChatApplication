@@ -8,7 +8,7 @@ namespace ChatApp.SignalR.Hubs
 {
     public class MessageHub(IEventPublisher _eventPublisher, ILogger<MessageHub> _logger) : Hub
     {
-
+        //Triggers when user login success
         public override async Task OnConnectedAsync()
         {
             var connectionId = Context.ConnectionId;
@@ -19,7 +19,7 @@ namespace ChatApp.SignalR.Hubs
 
                 UserConnectedEvent userConnectedEvent = new(userId, connectionId);
                 await _eventPublisher.PublishAsync(userConnectedEvent);
-                await _eventPublisher.PublishAsync(new UserWindowStateChangedEvent(userId, true));
+                await _eventPublisher.PublishAsync(new UserOnlineStatusChangedEvent(userId, true));
 
                 Console.WriteLine($"Connected : {connectionId}, User Id:{userId}");
             }
@@ -32,7 +32,7 @@ namespace ChatApp.SignalR.Hubs
             var userId = Convert.ToInt32(Context.UserIdentifier);
 
             await _eventPublisher.PublishAsync(new UserDisconnectedEvent(userId, connectionId));
-            await _eventPublisher.PublishAsync(new UserWindowStateChangedEvent(userId, false));
+            await _eventPublisher.PublishAsync(new UserOnlineStatusChangedEvent(userId, false));
 
             await base.OnDisconnectedAsync(exception);
         }
@@ -53,10 +53,10 @@ namespace ChatApp.SignalR.Hubs
 
             await _eventPublisher.PublishAsync(newMessageEvent);
         }
-        public async Task WindowStateChanged(bool isWindowVisible)
+        public async Task UserOnlineStatusChanged(bool isWindowVisible)
         {
             var userId = Convert.ToInt32(Context.UserIdentifier);
-            await _eventPublisher.PublishAsync(new UserWindowStateChangedEvent(userId, isWindowVisible));
+            await _eventPublisher.PublishAsync(new UserOnlineStatusChangedEvent(userId, isWindowVisible));
         }
     }
 }

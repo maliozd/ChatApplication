@@ -19,15 +19,15 @@ namespace ChatApp.Api.Controllers
         readonly IMediator _mediator = mediator;
 
         [HttpGet]
-        public async Task<ApiResponse<UserMessagesDto>> Get()
+        public async Task<ApiResponse<MessagesDto>> Get()
         {
             var userId = GetUserId();
             if (userId > 0)
             {
                 var response = await _mediator.Send(new GetMessagesQuery(userId));
-                return ApiResponse<UserMessagesDto>.Success(response);
+                return ApiResponse<MessagesDto>.Success(response);
             }
-            return ApiResponse<UserMessagesDto>.Error("User not found !");
+            return ApiResponse<MessagesDto>.Error("User not found !");
         }
     }
 }
