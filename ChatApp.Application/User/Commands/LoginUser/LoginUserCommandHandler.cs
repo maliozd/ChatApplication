@@ -17,6 +17,7 @@ namespace ChatApp.Application.User.Commands.LoginUser
             if (!VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
                 throw new Exception("Password is wrong");
 
+
             string token = await _mediator.Send(new TokenRequest(user.Id.ToString(), user.Username, user.Email), cancellationToken);
 
             return token;

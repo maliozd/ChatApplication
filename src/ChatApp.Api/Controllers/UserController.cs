@@ -1,4 +1,6 @@
-﻿using ChatApp.Application.User.Queries.Get;
+﻿using ChatApp.Api.Responses;
+using ChatApp.Application.Common.Dtos.User;
+using ChatApp.Application.User.Queries.Get;
 using ChatApp.Application.User.Queries.GetById;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -12,17 +14,16 @@ namespace ChatApp.Api.Controllers
     public class UserController(IMediator _mediator) : ControllerBase
     {
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<ApiResponse<UserDto>> Get(int id)
         {
-            var response = await _mediator.Send(new GetUserByIdQuery(id));
-            return Ok(response);
+            UserDto response = await _mediator.Send(new GetUserByIdQuery(id));
+            return ApiResponse<UserDto>.Success(response);
         }
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<ApiResponse<List<UserDto>>> Get()
         {
             var response = await _mediator.Send(new GetUsersQuery());
-
-            return Ok(response);
+            return ApiResponse<List<UserDto>>.Success(response);
         }
     }
 }

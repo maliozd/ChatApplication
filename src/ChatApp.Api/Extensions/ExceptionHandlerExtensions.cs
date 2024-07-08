@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+﻿using ChatApp.Api.Responses;
+using ChatApp.Application.Common.Exceptions;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
 using System.Net;
 using System.Net.Mime;
@@ -23,38 +25,40 @@ namespace ChatApp.Api.Extensions
 
                         logger.LogError(exception, "An unhandled exception occurred.");
 
-                        var errorDetails = new ErrorDetails
-                        {
-                            StatusCode = httpContext.Response.StatusCode,
-                            Message = "An unexpected error occurred. Please try again later.",
-                            Title = "Error"
-                        };
+                        ApiResponse<object> response;
 
                         if (exception is SecurityTokenExpiredException)
                         {
                             httpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                            errorDetails = new ErrorDetails
-                            {
-                                StatusCode = httpContext.Response.StatusCode,
-                                Message = "Token has expired. Please login again.",
-                                Title = "Unauthorized"
-                            };
+                            response = ApiResponse<object>.Fail(
+                                error: null,
+                                message: "Token has expired. Please login again.",
+                                code: httpContext.Response.StatusCode
+                            );
                         }
-
-                        if (exception is CustomException customException)
+                        else if (exception is CustomException customException)
                         {
                             httpContext.Response.StatusCode = (int)customException.StatusCode;
-                            errorDetails = new ErrorDetails
-                            {
-                                StatusCode = httpContext.Response.StatusCode,
-                                Message = customException.Message,
-                                Title = customException.Title
-                            };
+                            response = ApiResponse<object>.Fail(
+                                error: null,
+                                message: customException.Message,
+                                code: httpContext.Response.StatusCode
+                            );
+                        }
+                        else
+                        {
+                            response = ApiResponse<object>.Error(
+                                message: "An unexpected error occurred. Please try again later.",
+                                code: httpContext.Response.StatusCode,
+                                error: new
+                                {
+                                    exception.Message,
+                                    exception.StackTrace
+                                }
+                            );
                         }
 
-                        errorDetails.Detail = exception.StackTrace;
-
-                        await httpContext.Response.WriteAsJsonAsync(errorDetails);
+                        await httpContext.Response.WriteAsJsonAsync(response);
                     }
                 });
             });
@@ -62,23 +66,4 @@ namespace ChatApp.Api.Extensions
     }
 }
 
-public class ErrorDetails
-{
-    public int StatusCode { get; set; }
-    public string Message { get; set; }
-    public string Title { get; set; }
-    public string Detail { get; set; }
-}
 
-public class CustomException : Exception
-{
-    public HttpStatusCode StatusCode { get; }
-    public string Title { get; }
-
-    public CustomException(string message, HttpStatusCode statusCode = HttpStatusCode.BadRequest, string title = "Error")
-        : base(message)
-    {
-        StatusCode = statusCode;
-        Title = title;
-    }
-}

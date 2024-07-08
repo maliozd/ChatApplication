@@ -1,5 +1,4 @@
-﻿using ChatApp.Application.Common.Dtos;
-using ChatApp.Application.Common.Interfaces;
+﻿using ChatApp.Application.Common.Interfaces;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -43,25 +42,5 @@ namespace Infrastructure.Security.Jwt
             random.GetBytes(number);
             return Convert.ToBase64String(number);
         }
-
-        public async Task<TokenInfo> ReadToken(string token)
-        {
-            return await Task.Run(() =>
-            {
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var decodedToken = tokenHandler.ReadJwtToken(token);
-
-                var userIdClaim = decodedToken.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
-                var usernameClaim = decodedToken.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
-                var emailClaim = decodedToken.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
-
-                _ = int.TryParse(userIdClaim, out int userId);
-
-                return new TokenInfo(userId, usernameClaim, emailClaim);
-            });
-        }
-
-
-
     }
 }

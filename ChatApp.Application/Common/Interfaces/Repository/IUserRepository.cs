@@ -11,5 +11,6 @@ namespace ChatApp.Application.Common.Interfaces.Repository
         //Task<int> RemoveAsync(AppUser user, CancellationToken cancellationToken);
         Task<int> UpdateAsync(AppUser user, CancellationToken cancellationToken);
         Task<IEnumerable<AppUser>> GetAllAsync();
+
     }
 }

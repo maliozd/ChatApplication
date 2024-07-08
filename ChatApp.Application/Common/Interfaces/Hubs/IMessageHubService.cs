@@ -4,8 +4,7 @@ namespace Application.Common.Interfaces.Hubs
 {
     public interface IMessageHubService
     {
-        public Task SendMessageAsync(MessageDto chatMessage);
-        Task SendMessageAsync(MessageDto chatMessage, string connectionId);
-        public Task SendMessageAsync(MessageDto chatMessage, string userId, string function);
+        Task SendMessageAsync(MessageSignal chatMessage);
+        Task ChangeOnlineStatusAsync(string[] exculudedConnectionIds, string userId, bool onlineStatus);
     }
 }

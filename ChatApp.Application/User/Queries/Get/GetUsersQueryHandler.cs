@@ -22,7 +22,7 @@ namespace ChatApp.Application.User.Queries.Get
                 userList.Remove(myUser);
             }
 
-            return userList.Select(user => new UserDto(user.Id, user.Username, "C:\\Users\\mehme\\Downloads\\profilePic.jpg")).ToList();
+            return userList.Select(user => new UserDto(user.Id, user.Username, "C:\\Users\\mehme\\Downloads\\profilePic.jpg", user.LastSeen)).ToList();
         }
     }
 }

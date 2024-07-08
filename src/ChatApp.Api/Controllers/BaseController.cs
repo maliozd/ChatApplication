@@ -5,13 +5,12 @@ namespace ChatApp.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomBaseController : ControllerBase
+    public class BaseController : ControllerBase
     {
         protected int GetUserId()
         {
             if (HttpContext.Items["userId"] is not null)
             {
-
                 int userId1 = Convert.ToInt32(HttpContext.Items["userId"]);
                 return userId1;
             }

@@ -45,7 +45,7 @@ builder.Services.AddSignalR(options =>
 {
     options.KeepAliveInterval = TimeSpan.FromSeconds(5);
 });
-builder.Services.AddCors(options => options.AddPolicy(name: "alperen", policy => policy.WithOrigins("http://127.0.0.1:5500", "https://07cf-85-100-65-34.ngrok-free.app/", "https://127.0.0.1:5500", "http://127.0.0.1:8080").AllowAnyHeader().AllowAnyMethod().AllowCredentials().Build()));
+builder.Services.AddCors(options => options.AddPolicy(name: "alperen", policy => policy.WithOrigins("http://127.0.0.1:5500", "https://1b83-85-99-176-51.ngrok-free.app/", "https://127.0.0.1:5500", "http://127.0.0.1:8080", "http://192.168.1.110:5500").AllowAnyHeader().AllowAnyMethod().AllowCredentials().Build()));
 builder.Services.AddAuthentincationConfiguration(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddApplication();

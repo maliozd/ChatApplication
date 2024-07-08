@@ -1,32 +1,27 @@
 ﻿using Application.Common.Interfaces.Hubs;
+using ChatApp.Application.Common.Constants;
 using ChatApp.Application.Common.Dtos.SignalR;
 using ChatApp.SignalR.Hubs;
 using Microsoft.AspNetCore.SignalR;
 
 namespace ChatApp.SignalR.Services
 {
-    public class MessageHubService(IHubContext<MessageHub> _hubContext/*, IConnectionCache _connectionCache*/) : IMessageHubService
+    public class MessageHubService(IHubContext<MessageHub> _hubContext) : IMessageHubService
     {
-        public async Task A()
+        public async Task SendMessageAsync(MessageSignal chatMessage)
         {
-
+            await _hubContext.Clients.User(chatMessage.ToUserId.ToString()).SendAsync(SignalRConstants.ReceiveMessageFunctionName, chatMessage);
         }
-        public Task SendMessageAsync(MessageDto chatMessage)
+        public async Task ChangeOnlineStatusAsync(string[] connectionIds, string userId, bool onlineStatus)
         {
-            _hubContext.Clients.All.SendAsync("MessageReceived", chatMessage);
-            return Task.CompletedTask;
+            await _hubContext.Clients.AllExcept(connectionIds).SendAsync(SignalRConstants.UserOnlineStatusChangedFunctionName, userId, onlineStatus);
         }
-
-        public Task SendMessageAsync(MessageDto chatMessage, string connectionId)
-        {
-            _hubContext.Clients.Client(connectionId).SendAsync("MessageReceived", chatMessage);
-            return Task.CompletedTask;
-        }
-        public async Task SendMessageAsync(MessageDto chatMessage, string connectionId, string function)
-        {
-            await _hubContext.Clients.Client(connectionId).SendAsync(function, chatMessage);
-            //await _hubContext.Clients.Client(connectionId).SendAsync(function, chatMessage);
-        }
-
     }
+    //public class HubService : IHubContext<MessageHub>
+    //{
+    //    public IHubClients Clients => Clients.
+
+    //    public IGroupManager Groups => throw new NotImplementedException();
+    //}
+
 }
